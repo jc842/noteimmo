@@ -1,0 +1,138 @@
+---
+import { siteConfig } from '../config/site.config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  lang?: string;
+}
+
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+  image = '/images/og-image.jpg',
+  lang = 'fr',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
+const alternateFr = new URL(Astro.url.pathname.replace(/^\/(en|es)/, ''), siteConfig.url);
+const alternateEn = new URL('/en' + Astro.url.pathname.replace(/^\/(en|es)/, ''), siteConfig.url);
+const alternateEs = new URL('/es' + Astro.url.pathname.replace(/^\/(en|es)/, ''), siteConfig.url);
+---
+
+<!DOCTYPE html>
+<html lang={lang} class="scroll-smooth bg-slate-950 text-slate-100 antialiased selection:bg-blue-600 selection:text-white">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <link rel="alternate" hreflang="fr" href={alternateFr} />
+    <link rel="alternate" hreflang="en" href={alternateEn} />
+    <link rel="alternate" hreflang="es" href={alternateEs} />
+    <link rel="alternate" hreflang="x-default" href={alternateFr} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={image} />
+
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style is:global>
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
+      .font-mono {
+        font-family: 'JetBrains Mono', monospace;
+      }
+    </style>
+  </head>
+  <body class="flex min-h-screen flex-col bg-slate-950 text-slate-200">
+    <!-- Header Simplexity -->
+    <header class="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6">
+        <a href="/" class="flex items-center gap-3">
+          <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 font-mono text-base font-bold text-white shadow-lg shadow-blue-500/20">
+            NI
+          </div>
+          <div>
+            <span class="block text-base font-bold tracking-tight text-white">NOTE IMMO</span>
+            <span class="block font-mono text-[10px] tracking-wider text-blue-400 uppercase">Indices & Décotes</span>
+          </div>
+        </a>
+
+        <!-- Navigation Links -->
+        <nav class="hidden md:flex items-center gap-6 font-mono text-xs text-slate-300">
+          <a href="/blog/" class="hover:text-blue-400 transition-colors">BAROMÈTRE 2026</a>
+          <a href="/blog/" class="hover:text-blue-400 transition-colors">ÉVALUATION</a>
+          <a href="/blog/" class="hover:text-blue-400 transition-colors">DROIT & NOTAIRES</a>
+          <a href="/mentions-legales/" class="hover:text-blue-400 transition-colors">OBSERVATOIRE</a>
+        </nav>
+
+        <!-- Languages & Status -->
+        <div class="flex items-center gap-3">
+          <div class="hidden sm:flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-950/40 px-2.5 py-1 font-mono text-[11px] text-blue-300">
+            <span class="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+            INDICE IMMO LIVE
+          </div>
+          <div class="flex items-center gap-1 font-mono text-xs text-slate-400 border-l border-slate-800 pl-3">
+            <a href="/" class="px-1.5 py-0.5 rounded text-white font-bold bg-slate-800">FR</a>
+            <a href="/en/" class="px-1.5 py-0.5 rounded hover:text-white">EN</a>
+            <a href="/es/" class="px-1.5 py-0.5 rounded hover:text-white">ES</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-grow">
+      <slot />
+    </main>
+
+    <!-- Footer Simplexity -->
+    <footer class="border-t border-slate-800 bg-slate-900/60 py-12 text-slate-400 font-mono text-xs">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          <div class="md:col-span-2">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="h-6 w-6 rounded bg-blue-600 font-mono text-xs font-bold text-white flex items-center justify-center">NI</div>
+              <span class="text-sm font-bold text-white">NOTE IMMO OBSERVATOIRE</span>
+            </div>
+            <p class="font-sans text-xs text-slate-400 leading-relaxed max-w-md">
+              Plateforme indépendante de notation immobilière, analyse des décotes patrimoniales, baromètres notariaux et veille juridique pour les départements d'outre-mer et la métropole.
+            </p>
+          </div>
+          <div>
+            <h4 class="text-slate-200 font-semibold mb-3 tracking-wider text-[11px] uppercase">Navigation</h4>
+            <ul class="space-y-2 text-slate-400">
+              <li><a href="/" class="hover:text-blue-400 transition-colors">Accueil</a></li>
+              <li><a href="/blog/" class="hover:text-blue-400 transition-colors">Tous les Articles & Études</a></li>
+              <li><a href="/en/" class="hover:text-blue-400 transition-colors">English Edition</a></li>
+              <li><a href="/es/" class="hover:text-blue-400 transition-colors">Edición en Español</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-slate-200 font-semibold mb-3 tracking-wider text-[11px] uppercase">Légal & Données</h4>
+            <ul class="space-y-2 text-slate-400">
+              <li><a href="/mentions-legales/" class="hover:text-blue-400 transition-colors">Mentions Légales</a></li>
+              <li><a href="/politique-confidentialite/" class="hover:text-blue-400 transition-colors">Politique de Confidentialité</a></li>
+              <li><span class="text-slate-500">Cookieless RGPD Compliant</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="border-t border-slate-800/80 pt-6 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-500">
+          <p>© {new Date().getFullYear()} Note Immo — Données de marché et indices de valorisation.</p>
+          <p class="mt-2 sm:mt-0 font-mono">LEXINGTON SIMPLEXITY ARCHITECTURE</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
